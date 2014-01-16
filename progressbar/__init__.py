@@ -279,8 +279,9 @@ class ProgressBar(object):
         self.last_update_time = now
 
 
-    def start(self):
-        '''Starts measuring time, and prints the bar at 0%.
+    def start(self, initval=0):
+        '''Starts measuring time, initialize the progresbar at 0 (or the optional initval)
+        and prints the bar at the appropriate percentage.
 
         It returns self so you can use it like this:
         >>> pbar = ProgressBar().start()
@@ -298,12 +299,13 @@ class ProgressBar(object):
         self.next_update = 0
 
         if self.maxval is not UnknownLength:
-            if self.maxval < 0: raise ValueError('Value out of range')
+            if self.maxval < 0 or initval > self.maxval:
+                raise ValueError('Value out of range')
             self.update_interval = self.maxval / self.num_intervals
 
 
         self.start_time = self.last_update_time = time.time()
-        self.update(0)
+        self.update(initval)
 
         return self
 
